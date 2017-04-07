@@ -33,20 +33,29 @@ main (int argc, char *argv[])
 		}
 	}
 
+
+	printf("Matriz 1 \n");
 	for (i = 0; i < n; i = i + 1)
 	{
 		for (j = 0; j < n; j = j + 1)
 		{
-			printf("%lf\n",m1[i][j] );
+			printf("[");
+			printf("%lf",m1[i][j] );
+			printf("]");
 		}
+	printf("\n \n");
 	}
-	printf("\n \n \n");
+
+	printf("Matriz 2 \n");
 	for (i = 0; i < n; i = i + 1)
 	{
 		for (j = 0; j < n; j = j + 1)
 		{
-			printf("%lf\n",m2[i][j] );
+			printf("[");
+			printf("%lf",m2[i][j] );
+			printf("]");
 		}
+	printf("\n \n");	
 	}
 
 	for (i = 0; i < n; i = i + 1)
@@ -61,11 +70,16 @@ main (int argc, char *argv[])
 		}
 	}
 	printf("\n \n");
+
+	printf("Matriz resultado \n");
 	for (i = 0; i < n; i = i + 1)
 	{
 		for (j = 0; j < n; j = j + 1)
 		{
-			printf("%lf\n",mult[i][j] );
+			printf("[");
+			printf("%lf",mult[i][j] );
+			printf("]");
 		}
+	printf("\n");
 	}
 }
