@@ -15,20 +15,23 @@ void strassen(double **m1, double **m2, double **m3, int dim);
 int main (int argc, char *argv[])
 {
 
+	FILE *file;
 	srand(time(NULL));
 	if (argc != 4)
 	{
 		printf("Ingrese solo tipo de multiplicación, n y n0 \n");
 		end(0);
 	}
-	int opcion, i, j, aux;
-
-
+	int opcion, i, j, j1, aux;
+	double **m1, **m2, **m3;
+	float tiempo = 0;
+	clock_t inicio, fin; // Se crea variable 'clock_t' para calcular el tiempo de ejecúción del programa.
+	inicio = clock();
 	opcion = atoi(argv[1]);	
 	n = atoi(argv[2]);
 	n0 = atoi(argv[3]);
 	aux = n;
-	double **m1, **m2, **m3;
+	
 
 	m1 = calloc(n,sizeof(double*));
 	m2 = calloc(n,sizeof(double*));
@@ -69,7 +72,6 @@ int main (int argc, char *argv[])
 			break;
 	}
 
-
  	printf("Matriz 1 \n");
  	mostrar (m1, aux);
  	printf("\n");
@@ -78,6 +80,64 @@ int main (int argc, char *argv[])
  	printf("\n\n\n");
  	printf("Matriz resultado \n");
  	mostrar (m3, aux);
+
+
+
+ 	fin=clock();
+	tiempo = (fin-inicio)/(double)CLOCKS_PER_SEC;
+	printf("El tiempo de ejecución fue de: %f \n",tiempo); // %f es porque es un flotante!!!
+ 	file = fopen("expstrassen.txt", "a");
+    if(file == NULL)
+    {
+        printf("Error al abrir archivo");
+    }
+
+    // for (i = 0; i < n; i = i + 1)
+    // {
+    // 	if (i != 0)
+    // 	{
+    // 		fprintf(file, "\n");
+    // 	}
+    // 	for (j = 0; j < n; j = j + 1)
+    // 	{
+    // 		fprintf(file,"%lf \t \t %lf ",m1[i][j]), m2[i][j];
+    // 		printf("hola");
+    // 	}
+    // }
+
+
+    // fprintf(file,"\t \t ");
+
+    for (i = 0; i < aux; i = i + 1)
+    {
+
+		fprintf(file, "\n");    	
+		for (j = 0; j < aux; j = j + 1)
+		{
+    		fprintf(file,"%lf ",m1[i][j]);
+    		if (j == aux-1)
+    		{
+    			fprintf(file, "\t\t");   
+    			for(j1 = 0; j1 < aux; j1 = j1 + 1)
+    			{
+	    			fprintf(file, "%lf ",m2[i][j1] );
+	    			if (j1 == aux-1 && i == 0)
+	    			{
+						fprintf(file, "\t \t %F ",tiempo);
+	    			}
+	    			if (j1 == aux-1 && i == aux-1)
+	    			{
+	    				fprintf(file, "\n\n\n"); 
+	    			}
+	    		}
+    		}
+		}
+    }
+
+
+    return 0;
+
+    // fprintf(file, "\t \t %F \n", tiempo);
 }
 
 void mult(double **m1, double ** m2, double **m3, int n)
