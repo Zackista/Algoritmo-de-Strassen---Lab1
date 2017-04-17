@@ -26,3 +26,10 @@ Multiplicacion clasica N: 6, n0: 4, tiempo: 0.000127  	 Multiplicacion Strassen 
 Multiplicacion clasica N: 6, n0: 2, tiempo: 0.000126  	 Multiplicacion Strassen N: 6, n0: 2, tiempo: 0.000045  
 Multiplicacion clasica N: 30, n0: 2, tiempo: 0.000901  	 Multiplicacion Strassen N: 30, n0: 2, tiempo: 0.003236  
 Multiplicacion clasica N: 30, n0: 16, tiempo: 0.000904  	 Multiplicacion Strassen N: 30, n0: 16, tiempo: 0.000156  
+Multiplicacion clasica N: 6, n0: 2, tiempo: 0.000130  	 Multiplicacion Strassen N: 6, n0: 2, tiempo: 0.000084  
+Multiplicacion clasica N: 5, n0: 2, tiempo: 0.000138  	 Multiplicacion clasica N: 5, n0: 2, tiempo: 0.000142  	 Multiplicacion clasica N: 5, n0: 2, tiempo: 0.000132  	 Multiplicacion Strassen N: 5, n0: 2, tiempo: 0.000084  
+Multiplicacion clasica N: 5, n0: 2, tiempo: 0.000147  	 Multiplicacion Strassen N: 5, n0: 2, tiempo: 0.000126  
+Multiplicacion clasica N: 30, n0: 2, tiempo: 0.000487  	 Multiplicacion Strassen N: 30, n0: 2, tiempo: 0.002263  
+Multiplicacion clasica N: 6, n0: 2, tiempo: 0.000142  	 Multiplicacion Strassen N: 6, n0: 2, tiempo: 0.000134  
+Multiplicacion clasica N: 6, n0: 2, tiempo: 0.000129  	 Multiplicacion Strassen N: 6, n0: 2, tiempo: 0.000083  
+Multiplicacion clasica N: 6, n0: 2, tiempo: 0.000057  	 Multiplicacion Strassen N: 6, n0: 2, tiempo: 0.000075  

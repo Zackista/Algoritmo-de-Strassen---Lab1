@@ -5,7 +5,7 @@
 
 int n, n0;
 
-int suma(double m1, double m2, int n);
+int padding(int n);
 void mostrar (double** m, int n);
 void mult(double **m1, double **m2, double **m3, int n);
 void strassen(double **m1, double **m2, double **m3, int dim);
@@ -29,6 +29,9 @@ int main (int argc, char *argv[])
 	n = atoi(argv[1]);
 	n0 = atoi(argv[2]);
 	aux = n;
+
+	n0 = padding(n0);
+	n = padding(n);
 	
 
 	m1 = calloc(n,sizeof(double*));
@@ -59,6 +62,23 @@ int main (int argc, char *argv[])
 		}
 	}	
 
+	//en caso de que no sea cuadrada
+
+	for (i = aux; i < n; i = i + 1)
+	{
+		for(j = 0; j < n; j = j + 1)
+		{
+			m1[i][j] = 0;
+		}
+	}
+		for (i = aux; i < n; i = i + 1)
+	{
+		for(j = 0; j < n; j = j + 1)
+		{
+			m2[i][j] = 0;
+		}
+	}
+
 	mult(m1,m2,m3,aux);
  	fin1=clock();
 	tiempo = (fin1-inicio1)/(double)CLOCKS_PER_SEC;
@@ -88,14 +108,13 @@ int main (int argc, char *argv[])
  	inicio2 = clock();
  
 
- 	if (aux % 2 == 0)
- 	{
+
 		strassen(m1,m2,m3,n);
 		fin2=clock();
 		tiempo = (fin2-inicio2)/(double)CLOCKS_PER_SEC;
 		printf("El tiempo de ejecución fue de: %f \n",tiempo); // %f es porque es un flotante!!!
 		fprintf(file, "Multiplicacion Strassen N: %d, n0: %d, tiempo: %F  \n", aux, n0, tiempo);
- 	}
+ 	
 
 	
  	printf("Matriz 1 strassen \n");
@@ -182,160 +201,196 @@ void strassen(double **m1, double ** m2, double **m3, int dim)
 
 	double **p1, **p2, **p3, **p4, **p5, **p6, **p7;
 	double **aux, **aux2;
-	int i ,j; 
-	if(dim > n0) 
-	{ 
-		p1 = calloc(dim/2,sizeof(double*));		
-		p2 = calloc(dim/2,sizeof(double*)); 
-		p3 = calloc(dim/2,sizeof(double*));		
-		p4 = calloc(dim/2,sizeof(double*));				//se pide la memoria para las 7 submatrices y 2 matrices que se usaran como auxiliar
-		p5 = calloc(dim/2,sizeof(double*));		
-		p6 = calloc(dim/2,sizeof(double*));		
-		p7 = calloc(dim/2,sizeof(double*));		
-		
-		aux = calloc(dim/2,sizeof(double*));		
-		aux2 = calloc(dim/2,sizeof(double*));	
-		for(i = 0; i < dim/2; i = i + 1)
+	int i ,j;
+	if (dim % 2 == 0)
+	{
+		if(dim > n0) 
+		{ 
+			p1 = calloc(dim/2,sizeof(double*));		
+			p2 = calloc(dim/2,sizeof(double*)); 
+			p3 = calloc(dim/2,sizeof(double*));		
+			p4 = calloc(dim/2,sizeof(double*));				//se pide la memoria para las 7 submatrices y 2 matrices que se usaran como auxiliar
+			p5 = calloc(dim/2,sizeof(double*));		
+			p6 = calloc(dim/2,sizeof(double*));		
+			p7 = calloc(dim/2,sizeof(double*));		
+			
+			aux = calloc(dim/2,sizeof(double*));		
+			aux2 = calloc(dim/2,sizeof(double*));	
+			for(i = 0; i < dim/2; i = i + 1)
+			{
+				p1[i] = calloc(dim/2,sizeof(double*));
+				p2[i] = calloc(dim/2,sizeof(double*));
+				p3[i] = calloc(dim/2,sizeof(double*));
+				p4[i] = calloc(dim/2,sizeof(double*));
+				p5[i] = calloc(dim/2,sizeof(double*));
+				p6[i] = calloc(dim/2,sizeof(double*));
+				p7[i] = calloc(dim/2,sizeof(double*));
+				aux[i] = calloc(dim/2,sizeof(double*));		
+				aux2[i] = calloc(dim/2,sizeof(double*));	
+			}
+
+			for(i = 0; i < dim / 2; i = i + 1) 
+			{
+				for(j = 0; j < dim / 2; j = j + 1) 
+					aux[i][j] = m1[i][j] + m1[i + dim / 2][j + dim / 2];
+			}
+			
+			for(i = 0; i < dim / 2; i = i + 1) {
+				for(j = 0; j < dim / 2; j = j + 1) 
+					aux2[i][j] = m2[i][j] + m2[i + dim / 2][j + dim / 2];
+			}
+			n = dim / 2;
+			strassen(aux, aux2, p1, dim / 2);
+
+			//p2
+			for(i = 0; i < n / 2; i = i + 1) {
+				for(j = 0; j < n / 2; j = j + 1) 
+					aux[i][j] = m1[i + dim / 2][j] + m1[i + dim / 2][j + dim / 2];
+			}
+			for(i = 0; i < dim / 2; i = i + 1) {
+				for(j = 0; j < dim / 2; j = j + 1) 
+					aux2[i][j] = m2[i][j];
+			}
+			n = dim / 2;
+			strassen(aux, aux2, p2, dim / 2);
+
+			//p3
+			for(i = 0; i < dim / 2; i = i + 1) {
+				for(j = 0; j < dim / 2; j = j + 1) 
+					aux[i][j] = m1[i][j];
+			}
+
+			for(i = 0; i < dim / 2; i = i + 1) {
+				for(j = 0; j < dim / 2; j = j + 1) 
+					aux2[i][j] = m2[i][j + dim / 2] - m2[i + dim / 2][j + dim / 2];	
+			}
+			n = dim / 2;
+			strassen(aux, aux2, p3, dim / 2);
+
+			//p4
+			for(i = 0; i < dim / 2; i = i + 1) {
+				for(j = 0; j < dim / 2; j = j + 1) 
+					aux[i][j] = m1[i + dim / 2][j + dim / 2];
+			}
+			for(i = 0; i < dim / 2; i = i + 1) {
+				for(j = 0; j < dim / 2; j = j + 1) 
+					aux2[i][j] = m2[i + dim / 2][j] - m2[i][j];
+			}
+			n = dim / 2;
+			strassen(aux, aux2, p4, dim / 2);
+
+			//p5
+
+			for(i = 0; i < dim / 2; i = i + 1) {
+				for(j = 0; j < dim / 2; j = j + 1) 
+					aux[i][j] = m1[i][j] + m1[i][j + dim / 2];
+			}
+
+			for(i = 0; i < dim / 2; i = i + 1) {
+				for(j = 0; j < dim / 2; j = j + 1) 
+					aux2[i][j] = m2[i + dim / 2][j + dim / 2];
+			}
+			n = dim / 2;
+			strassen(aux, aux2, p5, dim / 2);
+
+			//p6
+
+			for(i = 0; i < dim / 2; i = i + 1) {
+				for(j = 0; j < dim / 2; j = j + 1) 
+					aux[i][j] = m1[i + dim / 2][j] - m1[i][j];
+			}
+			n = dim / 2;
+
+			for(i = 0; i < dim / 2; i = i + 1) {
+				for(j = 0; j < dim / 2; j = j + 1) 
+					aux2[i][j] = m2[i][j] + m2[i][j + dim / 2];
+			}
+
+			n = dim / 2;
+			strassen(aux, aux2, p6, dim / 2);
+
+			//p7
+			for(i = 0; i < dim / 2; i = i + 1) {
+				for(j = 0; j < dim / 2; j = j + 1) 
+					aux[i][j] = m1[i][j + dim / 2] - m1[i + dim / 2][j + dim / 2];
+			}
+
+			for(i = 0; i < dim / 2; i = i + 1)
+			{
+				for(j = 0; j < dim / 2; j = j + 1) 
+					aux2[i][j] = m2[i + dim / 2][j] + m2[i + dim / 2][j + dim / 2];
+			}
+			n = dim / 2;
+			strassen(aux, aux2, p7, dim/ 2);
+			
+			//c11
+			for(i = 0; i < dim / 2; i = i + 1) {
+				for(j = 0; j < dim / 2; j = j + 1) 
+					m3[i][j] = p1[i][j] + p4[i][j] - p5[i][j] + p7[i][j];
+			}
+
+			//c12
+			for(i = 0; i < dim / 2; i = i + 1) {
+				for(j = 0; j < dim / 2; j = j + 1) 
+					m3[i][j + dim / 2] = p3[i][j] + p5[i][j];
+			}
+			//c21
+			for(i = 0; i < dim / 2; i = i + 1) {
+				for(j = 0; j < dim / 2; j = j + 1) 
+					m3[i + dim / 2][j] = p2[i][j] + p4[i][j];
+			}
+			
+			//c22
+			for(i = 0; i < dim / 2; i = i + 1) {
+				for(j = 0; j < dim / 2; j = j + 1) 
+					m3[i + dim / 2][j + dim / 2] = p1[i][j] + p3[i][j] - p2[i][j] + p6[i][j];
+			}
+		}
+		else
 		{
-			p1[i] = calloc(dim/2,sizeof(double*));
-			p2[i] = calloc(dim/2,sizeof(double*));
-			p3[i] = calloc(dim/2,sizeof(double*));
-			p4[i] = calloc(dim/2,sizeof(double*));
-			p5[i] = calloc(dim/2,sizeof(double*));
-			p6[i] = calloc(dim/2,sizeof(double*));
-			p7[i] = calloc(dim/2,sizeof(double*));
-			aux[i] = calloc(dim/2,sizeof(double*));		
-			aux2[i] = calloc(dim/2,sizeof(double*));	
-		}
+			if(dim==n0)
+			{	//Si hemos llegado a n0 se usa multiplicación clásica
+				printf("paseeeeeeee 22\n");
+				mult(m1,m2,m3,dim);
 
-		for(i = 0; i < dim / 2; i = i + 1) 
-		{
-			for(j = 0; j < dim / 2; j = j + 1) 
-				aux[i][j] = m1[i][j] + m1[i + dim / 2][j + dim / 2];
-		}
-		
-		for(i = 0; i < dim / 2; i = i + 1) {
-			for(j = 0; j < dim / 2; j = j + 1) 
-				aux2[i][j] = m2[i][j] + m2[i + dim / 2][j + dim / 2];
-		}
-		n = dim / 2;
-		strassen(aux, aux2, p1, dim / 2);
-
-		//p2
-		for(i = 0; i < n / 2; i = i + 1) {
-			for(j = 0; j < n / 2; j = j + 1) 
-				aux[i][j] = m1[i + dim / 2][j] + m1[i + dim / 2][j + dim / 2];
-		}
-		for(i = 0; i < dim / 2; i = i + 1) {
-			for(j = 0; j < dim / 2; j = j + 1) 
-				aux2[i][j] = m2[i][j];
-		}
-		n = dim / 2;
-		strassen(aux, aux2, p2, dim / 2);
-
-		//p3
-		for(i = 0; i < dim / 2; i = i + 1) {
-			for(j = 0; j < dim / 2; j = j + 1) 
-				aux[i][j] = m1[i][j];
-		}
-
-		for(i = 0; i < dim / 2; i = i + 1) {
-			for(j = 0; j < dim / 2; j = j + 1) 
-				aux2[i][j] = m2[i][j + dim / 2] - m2[i + dim / 2][j + dim / 2];	
-		}
-		n = dim / 2;
-		strassen(aux, aux2, p3, dim / 2);
-
-		//p4
-		for(i = 0; i < dim / 2; i = i + 1) {
-			for(j = 0; j < dim / 2; j = j + 1) 
-				aux[i][j] = m1[i + dim / 2][j + dim / 2];
-		}
-		for(i = 0; i < dim / 2; i = i + 1) {
-			for(j = 0; j < dim / 2; j = j + 1) 
-				aux2[i][j] = m2[i + dim / 2][j] - m2[i][j];
-		}
-		n = dim / 2;
-		strassen(aux, aux2, p4, dim / 2);
-
-		//p5
-
-		for(i = 0; i < dim / 2; i = i + 1) {
-			for(j = 0; j < dim / 2; j = j + 1) 
-				aux[i][j] = m1[i][j] + m1[i][j + dim / 2];
-		}
-
-		for(i = 0; i < dim / 2; i = i + 1) {
-			for(j = 0; j < dim / 2; j = j + 1) 
-				aux2[i][j] = m2[i + dim / 2][j + dim / 2];
-		}
-		n = dim / 2;
-		strassen(aux, aux2, p5, dim / 2);
-
-		//p6
-
-		for(i = 0; i < dim / 2; i = i + 1) {
-			for(j = 0; j < dim / 2; j = j + 1) 
-				aux[i][j] = m1[i + dim / 2][j] - m1[i][j];
-		}
-		n = dim / 2;
-
-		for(i = 0; i < dim / 2; i = i + 1) {
-			for(j = 0; j < dim / 2; j = j + 1) 
-				aux2[i][j] = m2[i][j] + m2[i][j + dim / 2];
-		}
-
-		n = dim / 2;
-		strassen(aux, aux2, p6, dim / 2);
-
-		//p7
-		for(i = 0; i < dim / 2; i = i + 1) {
-			for(j = 0; j < dim / 2; j = j + 1) 
-				aux[i][j] = m1[i][j + dim / 2] - m1[i + dim / 2][j + dim / 2];
-		}
-
-		for(i = 0; i < dim / 2; i = i + 1)
-		{
-			for(j = 0; j < dim / 2; j = j + 1) 
-				aux2[i][j] = m2[i + dim / 2][j] + m2[i + dim / 2][j + dim / 2];
-		}
-		n = dim / 2;
-		strassen(aux, aux2, p7, dim/ 2);
-		
-		//c11
-		for(i = 0; i < dim / 2; i = i + 1) {
-			for(j = 0; j < dim / 2; j = j + 1) 
-				m3[i][j] = p1[i][j] + p4[i][j] - p5[i][j] + p7[i][j];
-		}
-
-		//c12
-		for(i = 0; i < dim / 2; i = i + 1) {
-			for(j = 0; j < dim / 2; j = j + 1) 
-				m3[i][j + dim / 2] = p3[i][j] + p5[i][j];
-		}
-		//c21
-		for(i = 0; i < dim / 2; i = i + 1) {
-			for(j = 0; j < dim / 2; j = j + 1) 
-				m3[i + dim / 2][j] = p2[i][j] + p4[i][j];
-		}
-		
-		//c22
-		for(i = 0; i < dim / 2; i = i + 1) {
-			for(j = 0; j < dim / 2; j = j + 1) 
-				m3[i + dim / 2][j + dim / 2] = p1[i][j] + p3[i][j] - p2[i][j] + p6[i][j];
+			}
 		}
 	}
 	else
 	{
-		if(dim==n0){	//Si hemos llegado a n0 se usa multiplicación clásica
-			mult(m1,m2,m3,dim);
-
-		}
+		printf("paseeeeee\n");
+		mult(m1,m2,m3,dim);
 	}
 }
 
+int padding(int n) 
+{  // Busca la potencia de dos más cercana por arriba del número para segurar una matriz cuadrada
+	int original_n = n, pot_menor = 0, i, act_n = 1;
 
+	if(n == 1)
+	{
+		return 1;
+	}
+	while(n > 1) 
+	{
+		pot_menor = pot_menor + 1;
+		n = n / 2;
+	}
 
+	for(i = 0; i < pot_menor; i = i + 1) 
+	{
+		act_n = act_n * 2;
+	}
+
+	if(act_n == original_n)
+	{	
+		return original_n;
+	}
+	else
+	{	
+		return act_n * 2;
+	}
+}
 
 void mostrar(double **m, int n)
 {
