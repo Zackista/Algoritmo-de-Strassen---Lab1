@@ -14,10 +14,9 @@ void strassen(double **m1, double **m2, double **m3, int dim);
 
 int main (int argc, char *argv[])
 {
-
 	FILE *file;
 	srand(time(NULL));
-	if (argc != 4)
+	if (argc != 3)
 	{
 		printf("Ingrese solo tipo de multiplicación, n y n0 \n");
 		end(0);
@@ -25,11 +24,10 @@ int main (int argc, char *argv[])
 	int opcion, i, j, j1, aux;
 	double **m1, **m2, **m3;
 	float tiempo = 0;
-	clock_t inicio, fin; // Se crea variable 'clock_t' para calcular el tiempo de ejecúción del programa.
-	inicio = clock();
-	opcion = atoi(argv[1]);	
-	n = atoi(argv[2]);
-	n0 = atoi(argv[3]);
+	clock_t inicio1, fin1; // Se crea variable 'clock_t' para calcular el tiempo de ejecúción del programa.
+	inicio1 = clock();	
+	n = atoi(argv[1]);
+	n0 = atoi(argv[2]);
 	aux = n;
 	
 
@@ -61,18 +59,46 @@ int main (int argc, char *argv[])
 		}
 	}	
 
-	switch(opcion)
-	{
-		case 1: 
-			mult(m1,m2,m3,aux);
-			break;
+	mult(m1,m2,m3,aux);
+ 	fin1=clock();
+	tiempo = (fin1-inicio1)/(double)CLOCKS_PER_SEC;
+	printf("El tiempo de ejecución fue de: %f \n",tiempo); // %f es porque es un flotante!!!
+ 	file = fopen("expstrassen.txt", "a");
+ 	fprintf(file, "Multiplicacion clasica N: %d, n0: %d, tiempo: %F  \t ", aux, n0, tiempo);
 
-		case 2:
-			strassen(m1,m2,m3,n);
-			break;
+ 	printf("Matriz 1 clasica \n");
+ 	mostrar (m1, aux);
+ 	printf("\n");
+ 	printf("Matriz 2 \n");
+ 	mostrar (m2, aux);
+ 	printf("\n\n\n");
+ 	printf("Matriz resultado \n");
+ 	mostrar (m3, aux);
+
+
+	for (i = 0; i < n; i = i + 1)
+	{
+		for (j = 0; j < n; j = j + 1)
+		{
+			m3[i][j] = 0;
+		}
 	}
 
- 	printf("Matriz 1 \n");
+ 	clock_t inicio2, fin2;
+ 	inicio2 = clock();
+ 
+
+ 	if (aux % 2 == 0)
+ 	{
+		strassen(m1,m2,m3,n);
+		fin2=clock();
+		tiempo = (fin2-inicio2)/(double)CLOCKS_PER_SEC;
+		printf("El tiempo de ejecución fue de: %f \n",tiempo); // %f es porque es un flotante!!!
+		fprintf(file, "Multiplicacion Strassen N: %d, n0: %d, tiempo: %F  \n", aux, n0, tiempo);
+ 	}
+
+	
+ 	printf("Matriz 1 strassen \n");
  	mostrar (m1, aux);
  	printf("\n");
  	printf("Matriz 2 \n");
@@ -83,15 +109,10 @@ int main (int argc, char *argv[])
 
 
 
- 	fin=clock();
-	tiempo = (fin-inicio)/(double)CLOCKS_PER_SEC;
-	printf("El tiempo de ejecución fue de: %f \n",tiempo); // %f es porque es un flotante!!!
- 	file = fopen("expstrassen.txt", "a");
     if(file == NULL)
     {
         printf("Error al abrir archivo");
     }
-
     // for (i = 0; i < n; i = i + 1)
     // {
     // 	if (i != 0)
@@ -108,31 +129,31 @@ int main (int argc, char *argv[])
 
     // fprintf(file,"\t \t ");
 
-    for (i = 0; i < aux; i = i + 1)
-    {
+  //   for (i = 0; i < aux; i = i + 1)
+  //   {
 
-		fprintf(file, "\n");    	
-		for (j = 0; j < aux; j = j + 1)
-		{
-    		fprintf(file,"%lf ",m1[i][j]);
-    		if (j == aux-1)
-    		{
-    			fprintf(file, "\t\t");   
-    			for(j1 = 0; j1 < aux; j1 = j1 + 1)
-    			{
-	    			fprintf(file, "%lf ",m2[i][j1] );
-	    			if (j1 == aux-1 && i == 0)
-	    			{
-						fprintf(file, "\t \t %F ",tiempo);
-	    			}
-	    			if (j1 == aux-1 && i == aux-1)
-	    			{
-	    				fprintf(file, "\n\n\n"); 
-	    			}
-	    		}
-    		}
-		}
-    }
+		// fprintf(file, "\n");    	
+		// for (j = 0; j < aux; j = j + 1)
+		// {
+  //   		fprintf(file,"%lf ",m1[i][j]);
+  //   		if (j == aux-1)
+  //   		{
+  //   			fprintf(file, "\t\t");   
+  //   			for(j1 = 0; j1 < aux; j1 = j1 + 1)
+  //   			{
+	 //    			fprintf(file, "%lf ",m2[i][j1] );
+	 //    			if (j1 == aux-1 && i == 0)
+	 //    			{
+		// 				fprintf(file, "\t \t %F ",tiempo);
+	 //    			}
+	 //    			if (j1 == aux-1 && i == aux-1)
+	 //    			{
+	 //    				fprintf(file, "\n\n\n"); 
+	 //    			}
+	 //    		}
+  //   		}
+		// }
+  //   }
 
 
     return 0;
@@ -158,6 +179,7 @@ void mult(double **m1, double ** m2, double **m3, int n)
 
 void strassen(double **m1, double ** m2, double **m3, int dim)
 {
+
 	double **p1, **p2, **p3, **p4, **p5, **p6, **p7;
 	double **aux, **aux2;
 	int i ,j; 
@@ -307,9 +329,12 @@ void strassen(double **m1, double ** m2, double **m3, int dim)
 	{
 		if(dim==n0){	//Si hemos llegado a n0 se usa multiplicación clásica
 			mult(m1,m2,m3,dim);
+
 		}
 	}
 }
+
+
 
 
 void mostrar(double **m, int n)
